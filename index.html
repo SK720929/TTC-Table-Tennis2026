@@ -83,7 +83,8 @@ input[type=text]:focus,input[type=password]:focus{border-color:var(--primary-lig
 /* ── Auto-banner ── */
 .auto-banner{background:linear-gradient(135deg,var(--primary) 0%,var(--primary-light) 100%);color:#fff;border-radius:var(--radius);padding:18px 22px;margin-bottom:18px;display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
 .auto-banner .info h3{font-size:1rem;margin-bottom:3px}
-.auto-banner .info p{font-size:.83rem;opacity:.85}
+.auto-banner .info p{font-size:.83rem;opacity:.9}
+.auto-banner .info p strong{font-size:1.3rem;font-weight:900;background:rgba(255,255,255,.25);border-radius:6px;padding:0 7px;margin:0 2px}
 
 /* ── Status banner ── */
 .status-banner{display:flex;align-items:center;gap:10px;flex-wrap:wrap;border-radius:var(--radius);padding:13px 18px;margin-bottom:18px;font-weight:700;font-size:.93rem}
@@ -539,12 +540,17 @@ function updateClock(){
     const { data } = todayData();
     if(!data.bracket && (data.registrations||[]).length >= 2){
       document.getElementById('auto-banner').style.display='flex';
+      // 每秒檢查一次，時間到就觸發倒數生成流程
+      triggerAutoGenerateCountdown();
+    } else {
+      document.getElementById('auto-banner').style.display='none';
     }
   } else {
     const h=Math.floor(diff/3600000), m=Math.floor((diff%3600000)/60000), s=Math.floor((diff%60000)/1000);
     document.getElementById('countdown-timer').textContent =
       `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
     document.getElementById('auto-banner').style.display='none';
+    autoGenCountdownActive = false; // 重置，避免跨日殘留
   }
 }
 
@@ -1166,15 +1172,66 @@ function confirmDelete(){
 }
 
 // ══════════════════════════════════════════
-//  自動生成檢查
+//  自動生成：30 秒倒數後自動執行
+// ══════════════════════════════════════════
+let autoGenCountdownActive = false;
+let autoGenTimer = null;
+
+function triggerAutoGenerateCountdown(){
+  // 防止重複觸發
+  if(autoGenCountdownActive) return;
+  const { data } = todayData();
+  if(data.bracket) return; // 已有賽程則跳過
+
+  autoGenCountdownActive = true;
+
+  // 更新 auto-banner 顯示倒數
+  const banner = document.getElementById('auto-banner');
+  if(banner){
+    banner.style.display = 'flex';
+    banner.innerHTML = `
+      <div class="info">
+        <h3>🔔 賽程即將自動生成！</h3>
+        <p>倒數 <strong id="auto-gen-sec">30</strong> 秒後自動生成賽程，或點右側立即生成</p>
+      </div>
+      <button class="btn btn-accent" onclick="cancelAutoGen();generateBracket()">🚀 立即生成</button>`;
+  }
+
+  let sec = 30;
+  autoGenTimer = setInterval(()=>{
+    sec--;
+    const secEl = document.getElementById('auto-gen-sec');
+    if(secEl) secEl.textContent = sec;
+
+    // 每秒再確認一次，若有人在別的裝置已生成就取消
+    const { data: d } = todayData();
+    if(d.bracket){
+      cancelAutoGen();
+      return;
+    }
+
+    if(sec <= 0){
+      cancelAutoGen();
+      generateBracket(); // 自動執行，不需要 confirm
+    }
+  }, 1000);
+}
+
+function cancelAutoGen(){
+  if(autoGenTimer){ clearInterval(autoGenTimer); autoGenTimer = null; }
+  autoGenCountdownActive = false;
+}
+
+// ══════════════════════════════════════════
+//  自動生成檢查（頁面載入時）
 // ══════════════════════════════════════════
 function checkAutoGenerate(){
-  const now=new Date(), target=new Date(now); target.setHours(17,0,0,0);
-  const { data }=todayData();
-  if(now>=target&&!data.bracket&&(data.registrations||[]).length>=2){
-    setTimeout(()=>{
-      if(confirm('現在已超過今天下午 5:00，要自動生成今日賽程嗎？')) generateBracket();
-    },800);
+  const now = new Date(), target = new Date(now);
+  target.setHours(17,0,0,0);
+  const { data } = todayData();
+  // 時間已過 17:00，有人報名，還沒有賽程 → 直接觸發倒數
+  if(now >= target && !data.bracket && (data.registrations||[]).length >= 2){
+    triggerAutoGenerateCountdown();
   }
 }
 
