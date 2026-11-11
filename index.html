@@ -116,6 +116,14 @@ input[type=text]:focus,input[type=password]:focus{border-color:var(--primary-lig
 .match-player .score{font-weight:700;font-size:.92rem;min-width:22px;text-align:center}
 .match-player.winner .score{color:var(--primary)}
 .match-id{font-size:.65rem;color:var(--text-muted);text-align:center;padding:2px;background:var(--bg)}
+.bracket-section-header{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-radius:10px;font-weight:700;font-size:.88rem;margin-bottom:8px}
+.bracket-section-header.winners{background:#e8f5e9;color:var(--primary-dark);border:1.5px solid #c8e6c9}
+.bracket-section-header.losers{background:#fff3e0;color:#e65100;border:1.5px solid #ffe0b2}
+.bracket-section-header.final{background:#fce4ec;color:#880e4f;border:1.5px solid #f8bbd0}
+.bracket-section-header .sec-badge{font-size:.75rem;font-weight:600;background:rgba(255,255,255,.8);padding:3px 9px;border-radius:6px;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+.format-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:6px;font-size:.75rem;font-weight:700}
+.format-badge.double{background:#e0f2fe;color:#0284c7;border:1px solid #bae6fd}
+.format-badge.single{background:#fef3c7;color:#d97706;border:1px solid #fde68a}
 
 /* ── Result Modal ── */
 .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);backdrop-filter:blur(4px);z-index:1000;align-items:center;justify-content:center}
@@ -239,15 +247,15 @@ input[type=text]:focus,input[type=password]:focus{border-color:var(--primary-lig
     <div class="auto-banner" id="auto-banner" style="display:none">
       <div class="info">
         <h3>🔔 賽程自動生成時間到了！</h3>
-        <p>現在已超過今天下午 5:00，賽程將自動生成。</p>
+        <p>現在已超過今天下午 5:30，賽程將自動生成。</p>
       </div>
       <button class="btn btn-accent" onclick="generateBracket()">🚀 立即生成賽程</button>
     </div>
 
     <div class="card">
-      <div class="card-title"><span>⏱️</span> 距今日賽程自動生成</div>
+      <div class="card-title"><span>⏱️</span> 距今日報名截止與賽程生成</div>
       <div id="countdown-timer">--:--:--</div>
-      <div style="font-size:.8rem;color:var(--text-muted);margin-top:5px">每天下午 5:00 自動生成當日賽程表</div>
+      <div style="font-size:.8rem;color:var(--text-muted);margin-top:5px">每天下午 5:30 截止報名並自動生成當日對戰表</div>
     </div>
 
     <div class="card">
@@ -271,31 +279,27 @@ input[type=text]:focus,input[type=password]:focus{border-color:var(--primary-lig
     </div>
 
     <div class="card">
-      <div class="card-title"><span>📋</span> 賽制說明</div>
-      <div style="display:flex;flex-direction:column;gap:9px;font-size:.88rem">
+      <div class="card-title"><span>📋</span> 賽制與局數規則</div>
+      <div style="display:flex;flex-direction:column;gap:10px;font-size:.88rem">
         <div style="display:flex;gap:9px;align-items:flex-start">
-          <span style="background:#e8f5e9;color:var(--primary);border-radius:6px;padding:2px 8px;font-weight:700;white-space:nowrap">2 人</span>
-          <span>直接冠軍賽（Bo7，先贏 4 局）</span>
+          <span style="background:#e0f2fe;color:#0284c7;border-radius:6px;padding:2px 8px;font-weight:700;white-space:nowrap">&lt; 8 人（2–7人）</span>
+          <span><strong>雙敗淘汰制</strong>：選手首輪進勝部，落敗者跌入敗部；敗部冠軍與勝部冠軍晉級總決賽（一場定勝負）。</span>
         </div>
         <div style="display:flex;gap:9px;align-items:flex-start">
-          <span style="background:#e8f5e9;color:var(--primary);border-radius:6px;padding:2px 8px;font-weight:700;white-space:nowrap">3–4 人</span>
-          <span>四強賽 + 冠軍賽</span>
+          <span style="background:#fef3c7;color:#d97706;border-radius:6px;padding:2px 8px;font-weight:700;white-space:nowrap">≥ 8 人</span>
+          <span><strong>單淘汰制</strong>：超過 8 人先進行資格賽篩選至八強，再晉級四強與冠軍賽。</span>
         </div>
         <div style="display:flex;gap:9px;align-items:flex-start">
-          <span style="background:#fff8e1;color:#e65100;border-radius:6px;padding:2px 8px;font-weight:700;white-space:nowrap">5–8 人</span>
-          <span>八強賽 + 四強 + 冠軍</span>
+          <span style="background:#e8f5e9;color:var(--primary);border-radius:6px;padding:2px 8px;font-weight:700;white-space:nowrap">八強賽</span>
+          <span>採 <strong>5 戰 3 勝制</strong>（Best of 5，先贏 3 局者勝）。</span>
         </div>
         <div style="display:flex;gap:9px;align-items:flex-start">
-          <span style="background:#fce4ec;color:#880e4f;border-radius:6px;padding:2px 8px;font-weight:700;white-space:nowrap">9+ 人</span>
-          <span>資格賽淘汰至 8 人 → 八強 → 四強 → 冠軍</span>
+          <span style="background:#fce4ec;color:#880e4f;border-radius:6px;padding:2px 8px;font-weight:700;white-space:nowrap">四強至決賽</span>
+          <span>採 <strong>7 戰 4 勝制</strong>（Best of 7，先贏 4 局者勝）。</span>
         </div>
-        <div style="display:flex;gap:9px;align-items:flex-start">
-          <span style="background:var(--bg);color:var(--text-muted);border-radius:6px;padding:2px 8px;font-weight:700;white-space:nowrap">單數</span>
-          <span>奇數人直接種子晉級，不須比賽</span>
-        </div>
-        <div style="margin-top:2px;color:var(--text-muted);font-size:.81rem">
-          ※ 預賽/資格賽/八強：Bo5 先贏3局；四強/冠軍：Bo7 先贏4局<br>
-          ※ 每輪打完後，晉級選手隨機重新抽籤配對
+        <div style="margin-top:4px;color:var(--text-muted);font-size:.81rem;line-height:1.5">
+          ※ 每天下午 <strong>17:30</strong> 準時截止報名，系統將依人數自動隨機抽籤生成對戰表。<br>
+          ※ 雙敗淘汰總決賽採一場定勝負制，獲勝者即為本日總冠軍。
         </div>
       </div>
     </div>
@@ -305,7 +309,7 @@ input[type=text]:focus,input[type=password]:focus{border-color:var(--primary-lig
   <div class="tab-panel" id="tab-bracket">
     <div id="bracket-area">
       <div class="empty-state"><div class="emoji">📅</div>
-        <p>本日賽程尚未生成。<br>請等待今天下午 5:00 自動生成。</p></div>
+        <p>本日賽程尚未生成。<br>請等待今天下午 5:30 自動生成。</p></div>
     </div>
   </div>
 
@@ -532,16 +536,15 @@ function updateClock(){
   document.getElementById('current-week-display').textContent =
     now.toLocaleString('zh-TW',{year:'numeric',month:'long',day:'numeric'});
 
-  const target = new Date(now); target.setHours(17,0,0,0);
+  const target = new Date(now); target.setHours(17,30,0,0);
   const diff = target - now;
 
   if(diff<=0){
-    document.getElementById('countdown-timer').textContent = '🔔 時間到！';
+    document.getElementById('countdown-timer').textContent = '🔔 報名已截止！';
     const { data } = todayData();
     if(!data.bracket && (data.registrations||[]).length >= 2){
-      document.getElementById('auto-banner').style.display='flex';
-      // 每秒檢查一次，時間到就觸發倒數生成流程
-      triggerAutoGenerateCountdown();
+      // 17:30 報名截止，自動生成賽程表
+      generateBracket();
     } else {
       document.getElementById('auto-banner').style.display='none';
     }
@@ -560,9 +563,14 @@ function updateClock(){
 function getStatusInfo(){
   const { data } = todayData();
   const regs = data.registrations || [];
-  if(!data.bracket) return { type:'registering', text:'📝 報名中', sub:`已報名 ${regs.length} 人` };
+  if(!data.bracket){
+    const now = new Date(), target = new Date(now); target.setHours(17,30,0,0);
+    if(now >= target && regs.length < 2) return { type:'finished', text:'🔔 報名已截止', sub:'報名人數未滿 2 人，今日未開賽' };
+    return { type:'registering', text:'📝 報名中', sub:`已報名 ${regs.length} 人（17:30 截止並自動抽籤生成賽程）` };
+  }
   if(data.completed) return { type:'finished', text:'🏆 賽事已完結', sub: data.podium?.[0] ? `冠軍：${data.podium[0].player}` : '' };
-  return { type:'playing', text:'🔥 比賽進行中', sub:`共 ${data.bracket.playerCount} 位選手` };
+  const modeText = data.bracket.typeLabel || (data.bracket.playerCount < 8 ? '雙敗淘汰制' : '單淘汰制');
+  return { type:'playing', text:`🔥 比賽進行中（${modeText}）`, sub:`共 ${data.bracket.playerCount} 位選手` };
 }
 
 function renderStatusBanner(){
@@ -615,6 +623,8 @@ function addPlayer(){
   const inp = document.getElementById('player-name-input');
   const name = inp.value.trim();
   if(!name) return showRegAlert('⚠️ 請輸入選手姓名','warning');
+  const now = new Date(), target = new Date(now); target.setHours(17,30,0,0);
+  if(now >= target) return showRegAlert('⚠️ 今日報名已於 17:30 截止','warning');
   const { data } = todayData();
   if(data.bracket) return showRegAlert('⚠️ 賽程已生成，無法新增選手','warning');
   const regs = data.registrations || [];
@@ -657,20 +667,221 @@ function getRoundLabel(n){
   if(n==='final')   return '🏆 冠軍賽';
   if(n==='semi')    return '🥊 四強賽';
   if(n==='quarter') return '⚡ 八強賽';
-  return '🔥 資格賽';
+  if(n==='qual')    return '🔥 資格賽';
+  if(n==='qual2')   return '🔥 資格賽';
+  if(n==='wb_q')    return '⚡ 勝部八強';
+  if(n==='wb_s')    return '🥊 勝部四強';
+  if(n==='wb_f')    return '👑 勝部決賽';
+  if(n==='lb_r1')   return '🔥 敗部第一輪';
+  if(n==='lb_r2')   return '🔥 敗部第二輪';
+  if(n==='lb_s')    return '🥊 敗部準決賽';
+  if(n==='lb_f')    return '🔥 敗部決賽';
+  if(n==='gf')      return '🏆 總決賽';
+  return '比賽';
 }
 
 function getFmt(n){
-  if(n==='final'||n==='semi') return { bestOf:7, winsNeeded:4 };
+  if(n==='final'||n==='semi'||n==='wb_s'||n==='wb_f'||n==='lb_s'||n==='lb_f'||n==='gf') return { bestOf:7, winsNeeded:4 };
   return { bestOf:5, winsNeeded:3 };
 }
 
-function makeMatch(id,p1,p2,rName){
+function makeMatch(id,p1,p2,rName,feedW,feedL,p1Done,p2Done){
   const f=getFmt(rName);
-  const m={ id, player1:p1, player2:p2, p1wins:0, p2wins:0, winner:null, bestOf:f.bestOf, winsNeeded:f.winsNeeded };
-  if(p1&&!p2){ m.winner=p1; m.p1wins=f.winsNeeded; }
-  else if(p2&&!p1){ m.winner=p2; m.p2wins=f.winsNeeded; }
+  const m={
+    id,
+    player1:p1||null,
+    player2:p2||null,
+    p1wins:0,
+    p2wins:0,
+    winner:null,
+    loser:null,
+    bestOf:f.bestOf,
+    winsNeeded:f.winsNeeded,
+    feedWinner:feedW||null,
+    feedLoser:feedL||null,
+    p1FeedDone:p1Done!==undefined?p1Done:(p1!==null&&p1!==undefined),
+    p2FeedDone:p2Done!==undefined?p2Done:(p2!==null&&p2!==undefined),
+    isBye:false
+  };
   return m;
+}
+
+function findMatchById(allRounds,id){
+  for(let ri=0;ri<allRounds.length;ri++){
+    const m=allRounds[ri].matches.find(x=>x.id===id);
+    if(m) return m;
+  }
+  return null;
+}
+
+function propagateBracket(allRounds){
+  let changed=true;
+  while(changed){
+    changed=false;
+    for(const r of allRounds){
+      for(const m of r.matches){
+        if(!m.winner){
+          if(m.player1&&!m.player2&&m.p2FeedDone){
+            m.winner=m.player1;
+            m.loser=null;
+            m.p1wins=m.winsNeeded;
+            m.p2wins=0;
+            m.isBye=true;
+            changed=true;
+          } else if(!m.player1&&m.player2&&m.p1FeedDone){
+            m.winner=m.player2;
+            m.loser=null;
+            m.p1wins=0;
+            m.p2wins=m.winsNeeded;
+            m.isBye=true;
+            changed=true;
+          } else if(m.p1FeedDone&&m.p2FeedDone&&!m.player1&&!m.player2){
+            m.winner='BYE_NOBODY';
+            m.loser=null;
+            changed=true;
+          }
+        }
+        if(m.winner){
+          const w=m.winner==='BYE_NOBODY'?null:m.winner;
+          const l=m.loser;
+          if(m.feedWinner){
+            const target=findMatchById(allRounds,m.feedWinner.matchId);
+            if(target){
+              const slot=m.feedWinner.slot;
+              const doneKey=slot==='player1'?'p1FeedDone':'p2FeedDone';
+              if(target[slot]!==w||!target[doneKey]){
+                target[slot]=w;
+                target[doneKey]=true;
+                changed=true;
+              }
+            }
+          }
+          if(m.feedLoser){
+            const target=findMatchById(allRounds,m.feedLoser.matchId);
+            if(target){
+              const slot=m.feedLoser.slot;
+              const doneKey=slot==='player1'?'p1FeedDone':'p2FeedDone';
+              if(target[slot]!==l||!target[doneKey]){
+                target[slot]=l;
+                target[doneKey]=true;
+                changed=true;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+function buildDoubleElimination(players){
+  const n=players.length;
+  if(n===2){
+    return [{
+      name:'gf', label:'🏆 總決賽', stage:'final',
+      matches:[ makeMatch('GF',players[0],players[1],'gf',null,null,true,true) ]
+    }];
+  }
+
+  if(n===3){
+    return [
+      {
+        name:'wb_s', label:'🥊 勝部準決賽', stage:'winners',
+        matches:[ makeMatch('WB_S1',players[1],players[2],'wb_s',{matchId:'WB_F',slot:'player2'},{matchId:'LB_F',slot:'player1'},true,true) ]
+      },
+      {
+        name:'wb_f', label:'👑 勝部決賽', stage:'winners',
+        matches:[ makeMatch('WB_F',players[0],null,'wb_f',{matchId:'GF',slot:'player1'},{matchId:'LB_F',slot:'player2'},true,false) ]
+      },
+      {
+        name:'lb_f', label:'🔥 敗部決賽', stage:'losers',
+        matches:[ makeMatch('LB_F',null,null,'lb_f',{matchId:'GF',slot:'player2'},null,false,false) ]
+      },
+      {
+        name:'gf', label:'🏆 總決賽', stage:'final',
+        matches:[ makeMatch('GF',null,null,'gf',null,null,false,false) ]
+      }
+    ];
+  }
+
+  if(n===4){
+    return [
+      {
+        name:'wb_s', label:'🥊 勝部四強', stage:'winners',
+        matches:[
+          makeMatch('WB_S1',players[0],players[3],'wb_s',{matchId:'WB_F',slot:'player1'},{matchId:'LB_R1',slot:'player1'},true,true),
+          makeMatch('WB_S2',players[1],players[2],'wb_s',{matchId:'WB_F',slot:'player2'},{matchId:'LB_R1',slot:'player2'},true,true)
+        ]
+      },
+      {
+        name:'wb_f', label:'👑 勝部決賽', stage:'winners',
+        matches:[ makeMatch('WB_F',null,null,'wb_f',{matchId:'GF',slot:'player1'},{matchId:'LB_F',slot:'player1'},false,false) ]
+      },
+      {
+        name:'lb_r1', label:'🔥 敗部準決賽', stage:'losers',
+        matches:[ makeMatch('LB_R1',null,null,'lb_s',{matchId:'LB_F',slot:'player2'},null,false,false) ]
+      },
+      {
+        name:'lb_f', label:'🔥 敗部決賽', stage:'losers',
+        matches:[ makeMatch('LB_F',null,null,'lb_f',{matchId:'GF',slot:'player2'},null,false,false) ]
+      },
+      {
+        name:'gf', label:'🏆 總決賽', stage:'final',
+        matches:[ makeMatch('GF',null,null,'gf',null,null,false,false) ]
+      }
+    ];
+  }
+
+  // 5 ~ 7 人
+  const s=[0,1,2,3,4,5,6,7].map(i=>players[i]||null);
+  return [
+    {
+      name:'wb_q', label:'⚡ 勝部八強', stage:'winners',
+      matches:[
+        makeMatch('WB_Q1',s[0],s[7],'wb_q',{matchId:'WB_S1',slot:'player1'},{matchId:'LB_R1_M1',slot:'player1'},true,true),
+        makeMatch('WB_Q2',s[3],s[4],'wb_q',{matchId:'WB_S1',slot:'player2'},{matchId:'LB_R1_M1',slot:'player2'},true,true),
+        makeMatch('WB_Q3',s[1],s[6],'wb_q',{matchId:'WB_S2',slot:'player1'},{matchId:'LB_R1_M2',slot:'player1'},true,true),
+        makeMatch('WB_Q4',s[2],s[5],'wb_q',{matchId:'WB_S2',slot:'player2'},{matchId:'LB_R1_M2',slot:'player2'},true,true)
+      ]
+    },
+    {
+      name:'wb_s', label:'🥊 勝部四強', stage:'winners',
+      matches:[
+        makeMatch('WB_S1',null,null,'wb_s',{matchId:'WB_F',slot:'player1'},{matchId:'LB_R2_M1',slot:'player1'},false,false),
+        makeMatch('WB_S2',null,null,'wb_s',{matchId:'WB_F',slot:'player2'},{matchId:'LB_R2_M2',slot:'player1'},false,false)
+      ]
+    },
+    {
+      name:'wb_f', label:'👑 勝部決賽', stage:'winners',
+      matches:[ makeMatch('WB_F',null,null,'wb_f',{matchId:'GF',slot:'player1'},{matchId:'LB_F',slot:'player1'},false,false) ]
+    },
+    {
+      name:'lb_r1', label:'🔥 敗部第一輪', stage:'losers',
+      matches:[
+        makeMatch('LB_R1_M1',null,null,'lb_r1',{matchId:'LB_R2_M1',slot:'player2'},null,false,false),
+        makeMatch('LB_R1_M2',null,null,'lb_r1',{matchId:'LB_R2_M2',slot:'player2'},null,false,false)
+      ]
+    },
+    {
+      name:'lb_r2', label:'🔥 敗部第二輪', stage:'losers',
+      matches:[
+        makeMatch('LB_R2_M1',null,null,'lb_r2',{matchId:'LB_S1',slot:'player1'},null,false,false),
+        makeMatch('LB_R2_M2',null,null,'lb_r2',{matchId:'LB_S1',slot:'player2'},null,false,false)
+      ]
+    },
+    {
+      name:'lb_s', label:'🥊 敗部準決賽', stage:'losers',
+      matches:[ makeMatch('LB_S1',null,null,'lb_s',{matchId:'LB_F',slot:'player2'},null,false,false) ]
+    },
+    {
+      name:'lb_f', label:'🔥 敗部決賽', stage:'losers',
+      matches:[ makeMatch('LB_F',null,null,'lb_f',{matchId:'GF',slot:'player2'},null,false,false) ]
+    },
+    {
+      name:'gf', label:'🏆 總決賽', stage:'final',
+      matches:[ makeMatch('GF',null,null,'gf',null,null,false,false) ]
+    }
+  ];
 }
 
 function buildRound(name, players, slots){
@@ -695,7 +906,6 @@ function buildQualRounds(players){
     for(let i=0;i<sh.length;i+=2) matches.push(makeMatch(`QM${i/2}`,sh[i],sh[i+1]||null,'qual'));
     return [{ name:'qual', label:'🔥 資格賽', matches, seeds }];
   }
-  // 超過 16 人打資格賽 → 兩輪
   const pre = fighters.length-16;
   const preFighters = shuffle(fighters.slice(fighters.length-pre*2));
   const preSeeds    = fighters.slice(0,fighters.length-pre*2);
@@ -727,37 +937,88 @@ function generateBracket(){
   const { key, data } = todayData();
   if(data.bracket) return;
   const players = data.registrations||[];
-  if(players.length<2){ alert('至少需要 2 位選手！'); return; }
-  const sh=shuffle(players), n=sh.length, allRounds=[];
-
-  if(n<=2){
-    allRounds.push(buildRound('final',sh,2));
-  } else if(n<=4){
-    allRounds.push(buildRound('semi',sh,4));
-    allRounds.push(buildEmptyRound('final',1));
-  } else if(n<=8){
-    allRounds.push(buildRound('quarter',sh,8));
-    allRounds.push(buildEmptyRound('semi',2));
-    allRounds.push(buildEmptyRound('final',1));
-  } else {
-    allRounds.push(...buildQualRounds(sh));
-    allRounds.push(buildEmptyRound('quarter',4));
-    allRounds.push(buildEmptyRound('semi',2));
-    allRounds.push(buildEmptyRound('final',1));
+  if(players.length<2){
+    if(autoGenCountdownActive) cancelAutoGen();
+    return;
   }
-  cascadeRound(allRounds,0);
+  const sh=shuffle(players), n=sh.length;
+  let allRounds=[];
+  let bracketType='single';
 
-  data.bracket = { allRounds, generated:new Date().toISOString(), playerCount:n };
+  if(n<8){
+    bracketType='double';
+    allRounds=buildDoubleElimination(sh);
+    propagateBracket(allRounds);
+  } else {
+    bracketType='single';
+    if(n===8){
+      allRounds.push(buildRound('quarter',sh,8));
+      allRounds.push(buildEmptyRound('semi',2));
+      allRounds.push(buildEmptyRound('final',1));
+    } else {
+      allRounds.push(...buildQualRounds(sh));
+      allRounds.push(buildEmptyRound('quarter',4));
+      allRounds.push(buildEmptyRound('semi',2));
+      allRounds.push(buildEmptyRound('final',1));
+    }
+    cascadeRound(allRounds,0);
+  }
+
+  data.bracket = {
+    type: bracketType,
+    typeLabel: bracketType==='double'?'雙敗淘汰制':'單淘汰制',
+    allRounds,
+    generated: new Date().toISOString(),
+    playerCount: n
+  };
   data.completed = false;
   data.aborted   = false;
   document.getElementById('auto-banner').style.display='none';
   saveTodayData();
-  showRegAlert('✅ 賽程已生成！','success');
+  showRegAlert(`✅ 已生成${data.bracket.typeLabel}（共 ${n} 人）！`,'success');
 }
 
 // ══════════════════════════════════════════
 //  賽程渲染
 // ══════════════════════════════════════════
+function renderRoundColumn(round){
+  const col=document.createElement('div');
+  col.className='bracket-round';
+  const f=getFmt(round.name);
+  const seedInfo=(round.seeds&&round.seeds.length)
+    ?`<div class="format-hint" style="color:#f5a623">${round.seeds.length} 位種子直晉</div>`:'';
+  col.innerHTML=`<div class="round-label">${round.label}<div class="format-hint">Bo${f.bestOf} 先贏${f.winsNeeded}局</div>${seedInfo}</div>`;
+  const mw=document.createElement('div');
+  mw.className='bracket-matches';
+  mw.style.justifyContent='space-around';
+
+  round.matches.forEach(m=>{
+    if(m.winner==='BYE_NOBODY') return;
+    const isBye=(m.player1&&!m.player2)||(!m.player1&&m.player2)||m.isBye;
+    const p1c=m.winner===m.player1?'winner':m.winner?'loser':(m.player1?'':'tbd');
+    const p2c=m.winner===m.player2?'winner':m.winner?'loser':(m.player2?'':'tbd');
+    const click=!m.winner&&m.player1&&m.player2;
+    const card=document.createElement('div');
+    card.className='match-wrapper';
+    card.innerHTML=`
+      <div class="match-card ${click?'active':m.winner?'completed':''}"
+        ${click?`onclick="openModal('${escHtml(m.id)}')" title="點擊登記比分"`:''}>
+        <div class="match-id">${m.id}</div>
+        <div class="match-player ${p1c}">
+          <span class="player-name">${m.player1?escHtml(m.player1):(isBye?'（輪空）':'（待定）')}</span>
+          <span class="score">${m.p1wins>0||m.winner?m.p1wins:''}</span>
+        </div>
+        <div class="match-player ${p2c}">
+          <span class="player-name">${m.player2?escHtml(m.player2):(isBye?'🌟輪空晉級':'（待定）')}</span>
+          <span class="score">${m.p2wins>0||m.winner?m.p2wins:''}</span>
+        </div>
+      </div>`;
+    mw.appendChild(card);
+  });
+  col.appendChild(mw);
+  return col;
+}
+
 function renderBracket(){
   const { data } = todayData();
   const area = document.getElementById('bracket-area');
@@ -765,91 +1026,108 @@ function renderBracket(){
   if(!data.bracket){
     const regs = data.registrations||[];
     area.innerHTML=`<div class="empty-state"><div class="emoji">📅</div>
-      <p>本日賽程尚未生成。<br>請等待今天下午 5:00 自動生成。</p>
+      <p>本日賽程尚未生成。<br>請等待今天下午 5:30 自動生成。</p>
       ${regs.length>=2?`<button class="btn btn-accent" style="margin-top:14px" onclick="generateBracket()">🚀 手動生成賽程</button>`:''}
     </div>`;
     return;
   }
-  const { allRounds, playerCount } = data.bracket;
+  const { allRounds, playerCount, type, typeLabel } = data.bracket;
   const gen = new Date(data.bracket.generated).toLocaleString('zh-TW');
+  const badgeClass = type==='double'?'double':'single';
 
-  area.innerHTML=`
-    <div class="card" style="margin-bottom:11px">
-      <div style="display:flex;align-items:center;gap:11px;flex-wrap:wrap">
-        <div>
-          <div class="card-title" style="margin-bottom:3px"><span>🏆</span> 本日賽程表</div>
-          <div style="font-size:.81rem;color:var(--text-muted)">生成：${gen}　共 ${playerCount} 位</div>
+  if(type==='double'){
+    area.innerHTML=`
+      <div class="card" style="margin-bottom:11px">
+        <div style="display:flex;align-items:center;gap:11px;flex-wrap:wrap">
+          <div>
+            <div class="card-title" style="margin-bottom:3px"><span>🏆</span> 本日賽程表</div>
+            <div style="font-size:.81rem;color:var(--text-muted);display:flex;align-items:center;gap:8px">
+              <span>生成：${gen}</span>
+              <span>共 ${playerCount} 位</span>
+              <span class="format-badge ${badgeClass}">${escHtml(typeLabel||'雙敗淘汰制')}</span>
+            </div>
+          </div>
+          ${data.completed
+            ?`<span style="margin-left:auto;background:#e8f5e9;color:var(--primary);border-radius:8px;padding:5px 13px;font-weight:700">🏆 賽事完結</span>`
+            :`<span style="margin-left:auto;background:#fff8e1;color:#e65100;border-radius:8px;padding:5px 13px;font-weight:700">🔥 進行中</span>`}
         </div>
-        ${data.completed
-          ?`<span style="margin-left:auto;background:#e8f5e9;color:var(--primary);border-radius:8px;padding:5px 13px;font-weight:700">🏆 賽事完結</span>`
-          :`<span style="margin-left:auto;background:#fff8e1;color:#e65100;border-radius:8px;padding:5px 13px;font-weight:700">🔥 進行中</span>`}
       </div>
-    </div>
-    <div class="card">
-      <div class="bracket-container">
-        <div class="bracket" id="bracket-visual"></div>
-      </div>
-    </div>
-    ${data.completed?renderStandings(data):''}`;
+      <div class="card">
+        <div class="bracket-section-header winners">
+          <span>🟢 勝部賽程 (Winners Bracket)</span>
+          <span class="sec-badge">落敗者跌入敗部</span>
+        </div>
+        <div class="bracket-container" style="margin-bottom:20px">
+          <div class="bracket" id="bracket-winners"></div>
+        </div>
 
-  const bv=document.getElementById('bracket-visual');
-  allRounds.forEach(round=>{
-    const col=document.createElement('div');
-    col.className='bracket-round';
-    const f=getFmt(round.name);
-    const seedInfo=(round.seeds&&round.seeds.length)
-      ?`<div class="format-hint" style="color:#f5a623">${round.seeds.length} 位種子直晉</div>`:'' ;
-    col.innerHTML=`<div class="round-label">${round.label}<div class="format-hint">Bo${f.bestOf} 先贏${f.winsNeeded}局</div>${seedInfo}</div>`;
-    const mw=document.createElement('div');
-    mw.className='bracket-matches';
-    mw.style.justifyContent='space-around';
-    round.matches.forEach(m=>{
-      const isBye=(m.player1&&!m.player2)||(!m.player1&&m.player2);
-      const p1c=m.winner===m.player1?'winner':m.winner?'loser':(m.player1?'':'tbd');
-      const p2c=m.winner===m.player2?'winner':m.winner?'loser':(m.player2?'':'tbd');
-      const click=!m.winner&&m.player1&&m.player2;
-      const card=document.createElement('div');
-      card.className='match-wrapper';
-      card.innerHTML=`
-        <div class="match-card ${click?'active':m.winner?'completed':''}"
-          ${click?`onclick="openModal('${escHtml(m.id)}')" title="點擊登記"`:''}>
-          <div class="match-id">${m.id}</div>
-          <div class="match-player ${p1c}">
-            <span class="player-name">${m.player1?escHtml(m.player1):(isBye?'（輪空）':'（待定）')}</span>
-            <span class="score">${m.p1wins>0||m.winner?m.p1wins:''}</span>
-          </div>
-          <div class="match-player ${p2c}">
-            <span class="player-name">${m.player2?escHtml(m.player2):(isBye?'🌟種子晉級':'（待定）')}</span>
-            <span class="score">${m.p2wins>0||m.winner?m.p2wins:''}</span>
-          </div>
-        </div>`;
-      mw.appendChild(card);
+        <div class="bracket-section-header losers">
+          <span>🟠 敗部賽程 (Losers Bracket)</span>
+          <span class="sec-badge">再敗淘汰，勝者挺進決賽</span>
+        </div>
+        <div class="bracket-container" style="margin-bottom:20px">
+          <div class="bracket" id="bracket-losers"></div>
+        </div>
+
+        <div class="bracket-section-header final">
+          <span>🏆 總決賽 (Grand Final)</span>
+          <span class="sec-badge">勝部冠軍 vs 敗部冠軍（一場定勝負，Bo7 先贏 4 局）</span>
+        </div>
+        <div class="bracket-container">
+          <div class="bracket" id="bracket-final"></div>
+        </div>
+      </div>
+      ${data.completed?renderStandings(data):''}`;
+
+    const wDiv=document.getElementById('bracket-winners');
+    const lDiv=document.getElementById('bracket-losers');
+    const fDiv=document.getElementById('bracket-final');
+    allRounds.forEach(round=>{
+      const col=renderRoundColumn(round);
+      if(round.stage==='winners'&&wDiv) wDiv.appendChild(col);
+      else if(round.stage==='losers'&&lDiv) lDiv.appendChild(col);
+      else if(round.stage==='final'&&fDiv) fDiv.appendChild(col);
     });
-    col.appendChild(mw);
-    bv.appendChild(col);
-  });
+  } else {
+    area.innerHTML=`
+      <div class="card" style="margin-bottom:11px">
+        <div style="display:flex;align-items:center;gap:11px;flex-wrap:wrap">
+          <div>
+            <div class="card-title" style="margin-bottom:3px"><span>🏆</span> 本日賽程表</div>
+            <div style="font-size:.81rem;color:var(--text-muted);display:flex;align-items:center;gap:8px">
+              <span>生成：${gen}</span>
+              <span>共 ${playerCount} 位</span>
+              <span class="format-badge ${badgeClass}">${escHtml(typeLabel||'單淘汰制')}</span>
+            </div>
+          </div>
+          ${data.completed
+            ?`<span style="margin-left:auto;background:#e8f5e9;color:var(--primary);border-radius:8px;padding:5px 13px;font-weight:700">🏆 賽事完結</span>`
+            :`<span style="margin-left:auto;background:#fff8e1;color:#e65100;border-radius:8px;padding:5px 13px;font-weight:700">🔥 進行中</span>`}
+        </div>
+      </div>
+      <div class="card">
+        <div class="bracket-container">
+          <div class="bracket" id="bracket-visual"></div>
+        </div>
+      </div>
+      ${data.completed?renderStandings(data):''}`;
+
+    const bv=document.getElementById('bracket-visual');
+    allRounds.forEach(round=>{
+      bv.appendChild(renderRoundColumn(round));
+    });
+  }
 }
 
 function renderStandings(data){
-  const finalR=data.bracket.allRounds.find(r=>r.name==='final');
-  const semiR =data.bracket.allRounds.find(r=>r.name==='semi');
-  if(!finalR) return '';
-  const finals=finalR.matches[0], podium=[];
-  if(finals?.winner){
-    podium.push({rank:1,player:finals.winner});
-    const ru=finals.player1===finals.winner?finals.player2:finals.player1;
-    if(ru) podium.push({rank:2,player:ru});
-  }
-  if(semiR) semiR.matches.forEach(m=>{
-    if(m.winner){ const l=m.player1===m.winner?m.player2:m.player1;
-      if(l&&!podium.find(p=>p.player===l)) podium.push({rank:3,player:l}); }
-  });
+  const podium=data.podium||[];
   if(!podium.length) return '';
+  const medals=['🥇','🥈','🥉','🏅'];
   return `<div class="card" style="margin-top:11px">
     <div class="card-title"><span>🥇</span> 本日成績</div>
     <div class="podium">
-      ${podium.map(p=>{const md=['🥇','🥈','🥉'];
-        return `<div class="podium-item">${md[p.rank-1]||'🏅'} <strong>${escHtml(p.player)}</strong> <span style="color:var(--text-muted);font-weight:400">第${p.rank}名</span></div>`;
+      ${podium.map(p=>{
+        return `<div class="podium-item">${medals[p.rank-1]||'🏅'} <strong>${escHtml(p.player)}</strong> <span style="color:var(--text-muted);font-weight:400">第${p.rank}名</span></div>`;
       }).join('')}
     </div></div>`;
 }
@@ -869,7 +1147,8 @@ function renderResultList(){
   let html='';
   allRounds.forEach(round=>{
     const f=getFmt(round.name);
-    const real=round.matches.filter(m=>m.player1&&m.player2);
+    const real=round.matches.filter(m=>!(m.isBye || m.winner==='BYE_NOBODY' || (!m.player1 && !m.player2 && m.p1FeedDone && m.p2FeedDone)));
+    if(!real.length) return;
     const done=real.filter(m=>m.winner).length, pend=real.filter(m=>!m.winner).length;
     const seedB=(round.seeds&&round.seeds.length)
       ?`<span style="font-size:.76rem;background:#fff3e0;color:#e65100;padding:2px 8px;border-radius:6px;margin-left:5px">🌟${round.seeds.length}位種子直晉</span>`:'';
@@ -879,7 +1158,7 @@ function renderResultList(){
         <span style="margin-left:auto;font-size:.8rem;color:${pend>0?'var(--accent-dark)':'var(--primary)'}">${done}/${real.length}場完成</span>
       </div><div style="display:flex;flex-direction:column;gap:7px">`;
     round.matches.forEach(m=>{
-      const isBye=(m.player1&&!m.player2)||(!m.player1&&m.player2);
+      const isBye=(m.player1&&!m.player2)||(!m.player1&&m.player2)||m.isBye||m.winner==='BYE_NOBODY';
       if(isBye||(!m.player1&&!m.player2)) return;
       const can=!m.winner&&m.player1&&m.player2;
       html+=`<div style="display:flex;align-items:center;gap:10px;padding:11px 13px;
@@ -942,7 +1221,7 @@ function adjustScore(player,delta){
   const found=findMatch(data.bracket.allRounds,activeMatchId);
   if(!found) return;
   const idx=player-1;
-  modalScores[idx]=Math.max(0,Math.min(found.match.bestOf,modalScores[idx]+delta));
+  modalScores[idx]=Math.max(0,Math.min(found.match.winsNeeded,modalScores[idx]+delta));
   document.getElementById(`modal-p${player}-score`).textContent=modalScores[idx];
 }
 
@@ -960,30 +1239,62 @@ function submitResult(){
   if(p1===p2){ err.textContent='⚠️ 不可平局'; return; }
   match.p1wins=p1; match.p2wins=p2;
   match.winner=p1>p2?match.player1:match.player2;
-  if(round.matches.every(m=>m.winner!==null)) cascadeRound(allRounds,roundIndex);
-  const finalR=allRounds.find(r=>r.name==='final');
-  if(finalR?.matches[0]?.winner){
-    data.completed=true;
-    saveHistorySummary(data);
-    data.registrations=[]; // 自動清除報名
+  match.loser =p1>p2?match.player2:match.player1;
+
+  if(data.bracket.type==='double'){
+    propagateBracket(allRounds);
+    const gfMatch=findMatchById(allRounds,'GF');
+    if(gfMatch?.winner){
+      data.completed=true;
+      saveHistorySummary(data);
+      data.registrations=[]; // 自動清除報名
+    }
+  } else {
+    if(round.matches.every(m=>m.winner!==null)) cascadeRound(allRounds,roundIndex);
+    const finalR=allRounds.find(r=>r.name==='final');
+    if(finalR?.matches[0]?.winner){
+      data.completed=true;
+      saveHistorySummary(data);
+      data.registrations=[]; // 自動清除報名
+    }
   }
   closeModal();
   saveTodayData();
 }
 
 function saveHistorySummary(data){
-  const finalR=data.bracket.allRounds.find(r=>r.name==='final');
-  const semiR =data.bracket.allRounds.find(r=>r.name==='semi');
-  const finals=finalR?.matches[0], podium=[];
-  if(finals?.winner){
-    podium.push({rank:1,player:finals.winner});
-    const ru=finals.player1===finals.winner?finals.player2:finals.player1;
-    if(ru) podium.push({rank:2,player:ru});
+  if(!data.bracket) return;
+  const podium=[];
+  if(data.bracket.type==='double'){
+    const gf=findMatchById(data.bracket.allRounds,'GF');
+    const lbf=findMatchById(data.bracket.allRounds,'LB_F');
+    const lbs=findMatchById(data.bracket.allRounds,'LB_S1')||findMatchById(data.bracket.allRounds,'LB_R1');
+    if(gf?.winner){
+      podium.push({rank:1,player:gf.winner});
+      if(gf.loser) podium.push({rank:2,player:gf.loser});
+    }
+    if(lbf?.loser){
+      podium.push({rank:3,player:lbf.loser});
+    }
+    if(lbs?.loser&&!podium.find(p=>p.player===lbs.loser)){
+      podium.push({rank:4,player:lbs.loser});
+    }
+  } else {
+    const finalR=data.bracket.allRounds.find(r=>r.name==='final');
+    const semiR =data.bracket.allRounds.find(r=>r.name==='semi');
+    const finals=finalR?.matches[0];
+    if(finals?.winner){
+      podium.push({rank:1,player:finals.winner});
+      const ru=finals.player1===finals.winner?finals.player2:finals.player1;
+      if(ru) podium.push({rank:2,player:ru});
+    }
+    if(semiR) semiR.matches.forEach(m=>{
+      if(m.winner){
+        const l=m.player1===m.winner?m.player2:m.player1;
+        if(l&&!podium.find(p=>p.player===l)) podium.push({rank:3,player:l});
+      }
+    });
   }
-  if(semiR) semiR.matches.forEach(m=>{
-    if(m.winner){ const l=m.player1===m.winner?m.player2:m.player1;
-      if(l&&!podium.find(p=>p.player===l)) podium.push({rank:3,player:l}); }
-  });
   data.podium=podium;
 }
 
@@ -1178,43 +1489,11 @@ let autoGenCountdownActive = false;
 let autoGenTimer = null;
 
 function triggerAutoGenerateCountdown(){
-  // 防止重複觸發
   if(autoGenCountdownActive) return;
   const { data } = todayData();
   if(data.bracket) return; // 已有賽程則跳過
-
   autoGenCountdownActive = true;
-
-  // 更新 auto-banner 顯示倒數
-  const banner = document.getElementById('auto-banner');
-  if(banner){
-    banner.style.display = 'flex';
-    banner.innerHTML = `
-      <div class="info">
-        <h3>🔔 賽程即將自動生成！</h3>
-        <p>倒數 <strong id="auto-gen-sec">30</strong> 秒後自動生成賽程，或點右側立即生成</p>
-      </div>
-      <button class="btn btn-accent" onclick="cancelAutoGen();generateBracket()">🚀 立即生成</button>`;
-  }
-
-  let sec = 30;
-  autoGenTimer = setInterval(()=>{
-    sec--;
-    const secEl = document.getElementById('auto-gen-sec');
-    if(secEl) secEl.textContent = sec;
-
-    // 每秒再確認一次，若有人在別的裝置已生成就取消
-    const { data: d } = todayData();
-    if(d.bracket){
-      cancelAutoGen();
-      return;
-    }
-
-    if(sec <= 0){
-      cancelAutoGen();
-      generateBracket(); // 自動執行，不需要 confirm
-    }
-  }, 1000);
+  generateBracket();
 }
 
 function cancelAutoGen(){
@@ -1227,11 +1506,11 @@ function cancelAutoGen(){
 // ══════════════════════════════════════════
 function checkAutoGenerate(){
   const now = new Date(), target = new Date(now);
-  target.setHours(17,0,0,0);
+  target.setHours(17,30,0,0);
   const { data } = todayData();
-  // 時間已過 17:00，有人報名，還沒有賽程 → 直接觸發倒數
+  // 時間已過 17:30，有人報名，還沒有賽程 → 自動生成賽程
   if(now >= target && !data.bracket && (data.registrations||[]).length >= 2){
-    triggerAutoGenerateCountdown();
+    generateBracket();
   }
 }
 
